@@ -18,10 +18,8 @@ function onConnect() {
 }
 
 function onConnectionLost(responseObject) {
-  if (responseObject.errorCode !== 0) {
-    console.log("onConnectionLost: " + responseObject.errorMessage);
-    window.composeApp.com.gsb.vyapar.bhagya.mqtt.connectionLost(responseObject.errorMessage)
-  }
+  console.log("onConnectionLost: " + responseObject.errorMessage);
+  window.composeApp.com.gsb.vyapar.bhagya.mqtt.connectionLost(responseObject.errorMessage)
 }
 
 function onMessageArrived(message) {

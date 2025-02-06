@@ -7,13 +7,19 @@ function disconnect() {
 }
 
 function publish(topic, message) {
-    const payload = new Paho.MQTT.Message(topic);
-    payload.destinationName = message;
-    window.mqttClient.send(payload);
+    window.mqttClient.send(topic, message, 1, false);
 }
 
 function subscribe(topic) {
-    window.mqttClient.subscribe(topic);
+    window.mqttClient.subscribe(topic, {
+        qos: 1,
+        onSuccess: function () {
+            console.log("Subscription successful");
+        },
+        onFailure: function (err) {
+            console.error("Subscription failed", err);
+        }
+    });
 }
 
 function unsubscribe(topic) {
