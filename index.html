@@ -12,6 +12,20 @@
     </div>
     <script type="application/javascript" src="mqtt.js"></script>
     <script type="application/javascript" src="mqttKotlinBridge.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Push initial state to history
+            history.pushState(null, null, location.href);
+
+            window.addEventListener("popstate", function (event) {
+                // Prevent going back
+                history.pushState(null, null, location.href);
+
+                // Handle custom behavior
+                alert("Back button is disabled on this page!");
+            });
+        });
+    </script>
 </head>
 <body>
 </body>
