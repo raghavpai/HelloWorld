@@ -38,7 +38,7 @@ async function saveToStorage(data) {
 
 let db = null
 async function createDatabase() {
-  let SQL = await initSqlJs({ locateFile: file => '/sql-wasm.wasm' })
+  let SQL = await initSqlJs({ locateFile: file => 'sql-wasm.wasm' })
   const existing = await loadFromStorage()
   db = existing ? new SQL.Database(existing) : new SQL.Database()
 }
