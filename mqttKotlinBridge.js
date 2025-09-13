@@ -2,8 +2,8 @@ let mqttUrl;
 let mqttOptions;
 
 function createMQTTClient() {
-  const hostname = window.composeApp.com.gsb.vyapar.bhagya.mqtt.getMqttUrl();
-  const port = window.composeApp.com.gsb.vyapar.bhagya.mqtt.getMqttPort();
+  const hostname = window.wasmModule.getMqttUrl();
+  const port = window.wasmModule.getMqttPort();
 
   mqttUrl = `wss://${hostname}:${port}/mqtt`
 
@@ -12,8 +12,8 @@ function createMQTTClient() {
     clientId: clientId,
     clean: true, // clean session
     connectTimeout: 30_000,
-    username: window.composeApp.com.gsb.vyapar.bhagya.mqtt.getMqttUserName(),
-    password: window.composeApp.com.gsb.vyapar.bhagya.mqtt.getMqttPassword()
+    username: window.wasmModule.getMqttUserName(),
+    password: window.wasmModule.getMqttPassword()
   };
 }
 
@@ -27,20 +27,20 @@ function connect() {
 
     client.on('connect', () => {
       console.log('Connected');
-      window.composeApp.com.gsb.vyapar.bhagya.mqtt.connectComplete();
+      window.wasmModule.connectComplete();
     });
 
     const handleDisconnect = (err) => {
       const msg = err?.message || 'Connection lost';
       console.log('Connection lost:', msg);
-      window.composeApp.com.gsb.vyapar.bhagya.mqtt.connectionLost(msg);
+      window.wasmModule.connectionLost(msg);
     };
     client.on('close', handleDisconnect);
     client.on('error', handleDisconnect);
 
     client.on('message', (topic, payload) => {
       console.log('onMessageArrived:', payload.toString());
-      window.composeApp.com.gsb.vyapar.bhagya.mqtt.messageArrived(
+      window.wasmModule.messageArrived(
         topic,
         payload.toString()
       );
@@ -94,3 +94,4 @@ function unsubscribe(topic) {
     });
   }
 }
+
