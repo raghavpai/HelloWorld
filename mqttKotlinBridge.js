@@ -26,20 +26,17 @@ function connect() {
     const client = mqtt.connect(mqttUrl, mqttOptions);
 
     client.on('connect', () => {
-      console.log('Connected');
       window.composeApp.com.gsb.vyapar.bhagya.mqtt.connectComplete();
     });
 
     const handleDisconnect = (err) => {
       const msg = err?.message || 'Connection lost';
-      console.log('Connection lost:', msg);
       window.composeApp.com.gsb.vyapar.bhagya.mqtt.connectionLost(msg);
     };
     client.on('close', handleDisconnect);
     client.on('error', handleDisconnect);
 
     client.on('message', (topic, payload) => {
-      console.log('onMessageArrived:', payload.toString());
       window.composeApp.com.gsb.vyapar.bhagya.mqtt.messageArrived(
         topic,
         payload.toString()
@@ -77,11 +74,7 @@ function subscribe(topic) {
       topic,
       { qos: 1 },
       (err, granted) => {
-        if (err) {
-          console.error('Subscription failed', err);
-        } else {
-          console.log('Subscription successful', granted);
-        }
+        if (err) console.error('Subscription failed', err);
       }
     );
   }
