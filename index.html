@@ -16,9 +16,12 @@
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/raghavpai/Content/refs/heads/main/images/image4.webp">
     <link type="text/css" rel="stylesheet" href="styles.css">
     <script type="application/javascript" src="webgl-shim.js"></script>
-    <script src="composeApp.js" defer></script>
-    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js" defer></script>
-    <script type="application/javascript" src="mqttKotlinBridge.js" defer></script>
+    <script type="module">
+        import * as wasmModule from './GSB-VyparBhagya-composeApp.mjs';
+        window.wasmModule = wasmModule;
+    </script>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script type="application/javascript" src="mqttKotlinBridge.js"></script>
 </head>
 <body>
 </body>

@@ -1,4 +1,6 @@
-import initSqlJs from 'sql.js'
+// Load SQL.js UMD bundle in a classic worker
+/* eslint-disable no-undef */
+importScripts('sql-wasm.js')
 
 const DB_NAME = 'sqldelight-db'
 const STORE_NAME = 'files'
@@ -38,7 +40,8 @@ async function saveToStorage(data) {
 
 let db = null
 async function createDatabase() {
-  let SQL = await initSqlJs({ locateFile: file => 'sql-wasm.wasm' })
+  // initSqlJs is provided globally by sql-wasm.js
+  let SQL = await initSqlJs({ locateFile: () => 'sql-wasm.wasm' })
   const existing = await loadFromStorage()
   db = existing ? new SQL.Database(existing) : new SQL.Database()
 }
