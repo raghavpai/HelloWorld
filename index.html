@@ -16,12 +16,36 @@
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/raghavpai/Content/refs/heads/main/images/image4.webp">
     <link type="text/css" rel="stylesheet" href="styles.css">
     <script type="application/javascript" src="webgl-shim.js"></script>
-    <script type="module">
-        import * as wasmModule from './GSB-VyparBhagya-composeApp.mjs';
-        window.wasmModule = wasmModule;
+    <script>
+        (function () {
+            if (typeof WebAssembly !== "object" || typeof WebAssembly.instantiateStreaming !== "function") {
+                return;
+            }
+            const originalInstantiateStreaming = WebAssembly.instantiateStreaming;
+            WebAssembly.instantiateStreaming = async function (source, importObject) {
+                const response = await source;
+                const headers = response.headers;
+                const contentType = headers ? (headers.get("Content-Type") || headers.get("content-type") || "") : "";
+                if (contentType.toLowerCase().indexOf("application/wasm") === -1) {
+                    const bytes = await response.arrayBuffer();
+                    return WebAssembly.instantiate(bytes, importObject);
+                }
+                const streamingResponse = response.clone();
+                try {
+                    return await originalInstantiateStreaming.call(WebAssembly, streamingResponse, importObject);
+                } catch (error) {
+                    if (error && typeof error.message === "string" && error.message.indexOf("MIME type") !== -1) {
+                        const bytes = await response.arrayBuffer();
+                        return WebAssembly.instantiate(bytes, importObject);
+                    }
+                    throw error;
+                }
+            };
+        })();
     </script>
-    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-    <script type="application/javascript" src="mqttKotlinBridge.js"></script>
+    <script src="composeApp.js" defer></script>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js" defer></script>
+    <script type="application/javascript" src="mqttKotlinBridge.js" defer></script>
 </head>
 <body>
 </body>
