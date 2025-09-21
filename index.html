@@ -43,6 +43,30 @@
             };
         })();
     </script>
+    <script>
+        (function () {
+            const readyPromise = import('./js-reexport-symbols.mjs')
+                .then((module) => module.api.awaitSkiko)
+                .catch((error) => {
+                    console.error('Skiko WebAssembly bootstrap failed', error);
+                    throw error;
+                });
+
+            globalThis.onWasmReady = function (callback) {
+                readyPromise
+                    .then(() => {
+                        try {
+                            callback();
+                        } catch (callbackError) {
+                            console.error('Skiko-ready callback failed', callbackError);
+                        }
+                    })
+                    .catch(() => {
+                        /* error already logged above */
+                    });
+            };
+        })();
+    </script>
     <script src="composeApp.js" defer></script>
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js" defer></script>
     <script type="application/javascript" src="mqttKotlinBridge.js" defer></script>
