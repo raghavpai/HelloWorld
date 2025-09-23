@@ -16,60 +16,9 @@
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/raghavpai/Content/refs/heads/main/images/image4.webp">
     <link type="text/css" rel="stylesheet" href="styles.css">
     <script type="application/javascript" src="webgl-shim.js"></script>
-    <script>
-        (function () {
-            if (typeof WebAssembly !== "object" || typeof WebAssembly.instantiateStreaming !== "function") {
-                return;
-            }
-            const originalInstantiateStreaming = WebAssembly.instantiateStreaming;
-            WebAssembly.instantiateStreaming = async function (source, importObject) {
-                const response = await source;
-                const headers = response.headers;
-                const contentType = headers ? (headers.get("Content-Type") || headers.get("content-type") || "") : "";
-                if (contentType.toLowerCase().indexOf("application/wasm") === -1) {
-                    const bytes = await response.arrayBuffer();
-                    return WebAssembly.instantiate(bytes, importObject);
-                }
-                const streamingResponse = response.clone();
-                try {
-                    return await originalInstantiateStreaming.call(WebAssembly, streamingResponse, importObject);
-                } catch (error) {
-                    if (error && typeof error.message === "string" && error.message.indexOf("MIME type") !== -1) {
-                        const bytes = await response.arrayBuffer();
-                        return WebAssembly.instantiate(bytes, importObject);
-                    }
-                    throw error;
-                }
-            };
-        })();
-    </script>
-    <script>
-        (function () {
-            const readyPromise = import('./js-reexport-symbols.mjs')
-                .then((module) => module.api.awaitSkiko)
-                .catch((error) => {
-                    console.error('Skiko WebAssembly bootstrap failed', error);
-                    throw error;
-                });
-
-            globalThis.onWasmReady = function (callback) {
-                readyPromise
-                    .then(() => {
-                        try {
-                            callback();
-                        } catch (callbackError) {
-                            console.error('Skiko-ready callback failed', callbackError);
-                        }
-                    })
-                    .catch(() => {
-                        /* error already logged above */
-                    });
-            };
-        })();
-    </script>
-    <script src="composeApp.js" defer></script>
-    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js" defer></script>
-    <script type="application/javascript" src="mqttKotlinBridge.js" defer></script>
+    <script type="application/javascript" src="composeApp.js"></script>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script type="application/javascript" src="mqttKotlinBridge.js"></script>
 </head>
 <body>
 </body>
